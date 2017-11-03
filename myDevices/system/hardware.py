@@ -7,6 +7,8 @@ import sys
 from uuid import getnode
 from myDevices.utils.logger import exception, info, warn, error, debug
 
+BOARD_VENDOR = ""
+BOARD_MODEL = ""
 BOARD_REVISION = 0
 CPU_REVISION = "0"
 CPU_HARDWARE = ""
@@ -34,7 +36,22 @@ try:
 except:
     exception("Error reading cpuinfo")
 
+try:
+    with open("/proc/device-tree/copyright", 'r') as copyright_file:
+        copyright = copyright_file.read().strip(' \n\t\0')
+        if copyright:
+            BOARD_VENDOR = copyright
+except:
+    exception("Error reading copyright")
 
+try:
+    with open('/proc/device-tree/model', 'r') as model_file:
+        model = model_file.read().strip(' \n\t\0')
+        if model:
+            BOARD_MODEL = model
+except:
+    exception ("Error reading model")
+    
 class Hardware:
     """Class for getting hardware info, including manufacturer, model and MAC address."""
 
@@ -53,8 +70,8 @@ class Hardware:
         self.model["a21041"] = "Pi 2 Model B"
         self.model["900092"] = "Zero"
         self.model["a22082"] = self.model["a02082"] = "Pi 3 Model B"
-        if "Rockchip" in CPU_HARDWARE:
-            self.model["0000"] = "Tinker Board"
+        if "ASUS" in BOARD_VENDOR:
+            self.model[self.Revision] = BOARD_MODEL
 
     def getManufacturer(self):
         """Return manufacturer name as string"""
@@ -65,9 +82,9 @@ class Hardware:
         if self.Revision in ["0005", "0009", "000f"]:
             return "Qisda"
         if self.Revision in ["0006", "0007", "000d"]:
-            return "Egoman"
-        if self.Revision == "0000" and "Rockchip" in CPU_HARDWARE:
-            return "ASUS"
+            return "Egoman"        
+        if BOARD_VENDOR:
+            return BOARD_VENDOR
         return "Element14/Premier Farnell"
 
     def getModel(self):
