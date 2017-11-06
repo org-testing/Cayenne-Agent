@@ -62,7 +62,7 @@ if not 'i2c' in user_groups:
     relogin = True
 
 if Hardware().getModel() == 'Tinker Board':
-    # Add spi group if it doesn't exist
+    # Add spi group if it doesn't exist (for earlier than v2.0.3)
     all_groups = [g.gr_name for g in grp.getgrall()]
     if not 'spi' in all_groups:
         os.system('groupadd -f -f spi')
@@ -78,17 +78,17 @@ if Hardware().getModel() == 'Tinker Board':
         current_dir = os.getcwd()
         try:
             TEMP_FOLDER = '/tmp/GPIO_API_for_Python'
-            GPIO_API_ZIP = TEMP_FOLDER + '.zip'
-            import urllib.request
+            try: #cleanup TEMP_FOLDER
+                import shutil
+                shutil.rmtree(TEMP_FOLDER)
+            except:
+                pass
             print('Downloading ASUS.GPIO library')
-            urllib.request.urlretrieve('http://dlcdnet.asus.com/pub/ASUS/mb/Linux/Tinker_Board_2GB/GPIO_API_for_Python.zip', GPIO_API_ZIP)
-            import zipfile
-            with zipfile.ZipFile(GPIO_API_ZIP, 'r') as lib_zip:
-                lib_zip.extractall(TEMP_FOLDER)
-                os.chdir(TEMP_FOLDER)
-                import distutils.core
-                print('Installing ASUS.GPIO library')
-                distutils.core.run_setup(TEMP_FOLDER + '/setup.py', ['install'])
+            os.system('git clone https://github.com/TinkerBoard/gpio_lib_python --depth=1 ' + TEMP_FOLDER)
+            os.chdir(TEMP_FOLDER)
+            import distutils.core
+            print('Installing ASUS.GPIO library')
+            distutils.core.run_setup(TEMP_FOLDER + '/setup.py', ['install'])
         except Exception as ex:
             print('Error installing ASUS.GPIO library: {}'.format(ex))
         finally:
