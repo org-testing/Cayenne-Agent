@@ -84,7 +84,7 @@ if Hardware().getModel() == 'Tinker Board':
             except:
                 pass
             print('Downloading ASUS.GPIO library')
-            os.system('git clone https://github.com/TinkerBoard/gpio_lib_python --depth=1 ' + TEMP_FOLDER)
+            os.system('git clone http://github.com/TinkerBoard/gpio_lib_python --depth=1 ' + TEMP_FOLDER)
             os.chdir(TEMP_FOLDER)
             import distutils.core
             print('Installing ASUS.GPIO library')
