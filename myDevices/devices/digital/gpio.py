@@ -365,7 +365,7 @@ class NativeGPIO(GPIOPort):
         return function_string
 
     def setPinMapping(self):
-        if Hardware().getModel() == 'Tinker Board':
+        if 'Tinker Board' in Hardware().getModel():
             self.MAPPING = ["V33", "V50", 252, "V50", 253, "GND", 17, 161, "GND", 160, 164, 184, 166, "GND", 167, 162, "V33", 163, 257, "GND", 256, 171, 254, 255, "GND", 251, "DNC", "DNC" , 165, "GND", 168, 239, 238, "GND", 185, 223, 224, 187, "GND", 188]
         else:
             if BOARD_REVISION == 1:
